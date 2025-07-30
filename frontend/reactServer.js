@@ -1,7 +1,6 @@
 // reactServer.cjs
 // Uses common JavaScript to serve the React build folder (/dist)
 
-require('dotenv').config()
 require('dotenv').config({path: '../.env'})
 
 const express = require('express');
@@ -19,6 +18,6 @@ app.get('*', (req, res) => {
 });
 
 // Start the server and listen on the specified port
-app.listen(process.env.FRONTEND_PORT, () => {
-    console.log(`Server running: http://classwork.engr.oregonstate.edu:${process.env.FRONTEND_PORT}...`);
+app.listen(process.env.VITE_FRONTEND_PORT, () => {
+    console.log(`Server running: http://classwork.engr.oregonstate.edu:${process.env.VITE_FRONTEND_PORT}...`);
 });
