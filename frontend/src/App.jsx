@@ -1,7 +1,7 @@
 import './App.scss';
 import { useState, useEffect } from 'react';  // Importing useState for managing state in the component
 
-const backendURL =  `${import.meta.env.MODE == 'production' ? "http://localhost" : "http://classwork.engr.oregonstate.edu" }:${import.meta.env.VITE_BACKEND_PORT}/`;
+const backendURL =  `${import.meta.env.MODE == 'production' ? "http://classwork.engr.oregonstate.edu" : "http://classwork.engr.oregonstate.edu"}:${import.meta.env.VITE_BACKEND_PORT}/`;
 
 function App() {
 
@@ -47,7 +47,7 @@ function App() {
   return (
     <>
         <div>
-            <table className='table1 m-0 p-0'>
+            <table className='table1 m-0 p-0 table-fixed'>
                 <thead className='header1'>
                         <tr className='tr1'>
                             {
@@ -63,7 +63,7 @@ function App() {
                                 <tr className='tr2 [&>*:first-child]:(rounded-l-lg border-l-solid) [&>*:last-child]:(rounded-r-lg border-r-solid)' key={index}>
                                     {
                                         Object.keys(row).map((header, index) => (
-                                            <td className='td1 text-center border-t-solid border-b-solid p-t-4 p-b-4' key={index}>{row[header]}</td>
+                                            <td lang="en" className='td1 text-left border-t-solid border-b-solid p-t-4 p-b-4 p-l-2 p p-r-2 break-all' key={index}>{row[header]}</td>
                                         ))
                                     }
                                 </tr>
