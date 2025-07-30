@@ -64,7 +64,7 @@ function App() {
   return (
     <>
         <div>
-            {!production ? <h1 className='text-1xl rounded-lg p-2 font-mono bg-white text-black border-2 border-solid shadow-md text-center text-2xl m-0 p-0'>Fury Finds! (Production)</h1> : <div></div>}
+            {production ? <h1 className='text-1xl rounded-lg p-2 font-mono bg-white text-black border-2 border-solid shadow-md text-center text-2xl m-0 p-0'>Fury Finds! (Production)</h1> : <div></div>}
             <table className='table1 m-0 p-0 table-fixed'>
                 <thead className='header1'>
                         <tr className='tr1'>
