@@ -1,0 +1,9 @@
+{
+    "workspaces": [
+        "frontend",
+        "backend"
+    ],
+    "scripts": {
+        "redeploy": "bun run --filter '*' redeploy"
+    }
+}

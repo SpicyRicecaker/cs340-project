@@ -6,20 +6,21 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "production": "npm run build && npx forever start reactServer.cjs",
-    "stop_production": "npx forever stop reactServer.cjs",
+    "redeploy": "bun run build && bun run stop-server; bun run start-server",
+    "stop-server": "bunx pm2 stop frontend",
+    "start-server": "bunx pm2 start reactServer.cjs --name='frontend'",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
     "express": "^5.1.0",
-    "forever": "^4.0.3",
     "path": "^0.12.7",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "sass-embedded": "^1.89.2",
     "unocss": "^66.3.3",
-    "dotenv": "^17.2.1"
+    "dotenv": "^17.2.1",
+    "pm2": "6.0.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
