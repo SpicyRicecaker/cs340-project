@@ -5,16 +5,17 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "production": "npx forever start server.js",
-    "stop_production": "npx forever stop server.js"
-  },
+    "redeploy": "bun run stop-server; bun run start-server",
+    "start-server": "bunx pm2 start server.js --name='backend'",
+    "stop-server": "bunx pm2 stop"
+  }, 
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "forever": "^4.0.3",
+    "pm2": "^6.0.8",
     "mysql2": "^3.14.1",
     "nodemon": "^3.1.10"
   }
