@@ -1,12 +1,12 @@
 // reactServer.cjs
 // Uses common JavaScript to serve the React build folder (/dist)
 
+require('dotenv').config()
+require('dotenv').config({path: '../.env'})
+
 const express = require('express');
 const path = require('path');
 const app = express();
-
-// We will simply hardcode the react PORT, but normally this should be inside .env
-const PORT = 3977;
 
 // Serve the static files from the React app located in the build folder '/dist'
 // React router will take over frontend routing
@@ -19,6 +19,6 @@ app.get('*', (req, res) => {
 });
 
 // Start the server and listen on the specified port
-app.listen(PORT, () => {
-    console.log(`Server running: http://classwork.engr.oregonstate.edu:${PORT}...`);
+app.listen(process.env.FRONTEND_PORT, () => {
+    console.log(`Server running: http://classwork.engr.oregonstate.edu:${process.env.FRONTEND_PORT}...`);
 });

@@ -1,10 +1,7 @@
-import './App.css';
+import './App.scss';
 import { useState, useEffect } from 'react';  // Importing useState for managing state in the component
 
-// Define the backend port and URL for API requests
-const backendPort = 3976;  // Use the port you assigned to the backend server, this would normally go in .env file
-// const backendURL = `http://classwork.engr.oregonstate.edu:${backendPort}/`;
-const backendURL = `http://localhost:${backendPort}/`;
+const backendURL = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}/`;
 
 function App() {
 
@@ -33,8 +30,6 @@ function App() {
         }
     };
 
-    const [length, setLength] = useState(0)
-
     // Load table on page load
     useEffect(() => {
         getData();
@@ -51,30 +46,32 @@ function App() {
 
   return (
     <>
-        <table>
-            <thead>
-                <tr>
-                    {
-                        Object.keys(message[0]).map((header) => (
-                            <th key={header}>{header}</th>
-                        ))
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    message.map((row, index) => (
-                        <tr key={index}>
+        <div>
+            <table className='table1 m-0 p-0'>
+                <thead className='header1'>
+                        <tr className='tr1'>
                             {
-                                Object.keys(row).map((header, index) => (
-                                    <td key={index}>{row[header]}</td>
+                                Object.keys(message[0]).map((header) => (
+                                    <th className='th1 p-4' key={header}>{header}</th>
                                 ))
                             }
                         </tr>
-                    ))
-                }
-            </tbody>
-        </table>
+                    </thead>
+                    <tbody>
+                        {
+                            message.map((row, index) => (
+                                <tr className='tr2 [&>*:first-child]:(rounded-l-lg border-l-solid) [&>*:last-child]:(rounded-r-lg border-r-solid)' key={index}>
+                                    {
+                                        Object.keys(row).map((header, index) => (
+                                            <td className='td1 text-center border-t-solid border-b-solid p-t-4 p-b-4' key={index}>{row[header]}</td>
+                                        ))
+                                    }
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+            </table>
+        </div>
     </>
   );
 
