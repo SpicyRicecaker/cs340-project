@@ -104,13 +104,13 @@ function App() {
                                                                 } else {
                                                                     props.push('text-left')
                                                                 }
-                                                                // props.push('hyphen-auto')
+                                                                props.push('hyphen-auto')
                                                             } else {
                                                                 if (isSmall) {
                                                                     props.push('text-center')
                                                                 } else {
                                                                     props.push('text-left')
-                                                                    // props.push('break-all')
+                                                                    props.push('break-all')
                                                                 }
                                                             }
 
