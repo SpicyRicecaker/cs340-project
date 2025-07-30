@@ -1,7 +1,7 @@
 import './App.scss';
 import { useState, useEffect } from 'react';  // Importing useState for managing state in the component
 
-const backendURL = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}/`;
+const backendURL =  `${import.meta.env.MODE == 'production' ? "http://localhost" : "http://classwork.engr.oregonstate.edu/" }:${import.meta.env.VITE_BACKEND_PORT}/`;
 
 function App() {
 
