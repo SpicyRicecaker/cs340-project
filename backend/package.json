@@ -7,7 +7,7 @@
     "dev": "nodemon server.js",
     "redeploy": "bun run stop-server; bun run start-server",
     "start-server": "bunx pm2 start server.js --name='backend'",
-    "stop-server": "bunx pm2 stop"
+    "stop-server": "bunx pm2 stop backend"
   }, 
   "author": "",
   "license": "ISC",
