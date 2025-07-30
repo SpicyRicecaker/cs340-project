@@ -1,7 +1,8 @@
 import './App.scss';
 import { useState, useEffect, useMemo } from 'react';  // Importing useState for managing state in the component
 
-const backendURL =  `${import.meta.env.MODE == 'production' ? "http://classwork.engr.oregonstate.edu" : "http://classwork.engr.oregonstate.edu"}:${import.meta.env.VITE_BACKEND_PORT}/`;
+const production = import.meta.env.MODE == 'production'
+const backendURL =  `${production ? "http://classwork.engr.oregonstate.edu" : "http://classwork.engr.oregonstate.edu"}:${import.meta.env.VITE_BACKEND_PORT}/`;
 
 function App() {
     // Set up a state variable `message` to store and display the backend response
@@ -63,6 +64,7 @@ function App() {
   return (
     <>
         <div>
+            {!production ? <h1 className='text-1xl rounded-lg p-2 font-mono bg-white text-black border-2 border-solid shadow-md text-center text-2xl m-0 p-0'>Fury Finds! (Production)</h1> : <div></div>}
             <table className='table1 m-0 p-0 table-fixed'>
                 <thead className='header1'>
                         <tr className='tr1'>
@@ -78,15 +80,11 @@ function App() {
                             rows.map((row, i_r) => (
                                 <tr className='tr2 [&>*:first-child]:(rounded-l-lg border-l-solid) [&>*:last-child]:(rounded-r-lg border-r-solid)' key={i_r}>
                                     {
-                                        Object.keys(row).map((header, i_k) => {
-                                            console.log(row)
-                                                console.log(i_k);
-                                                console.log(rowMetaData)
+                                        Object.keys(row).map((k, i_k) => {
                                             return (
                                                 <td 
                                                     lang="en" 
                                                     className={`td1
-                                                        ${rowMetaData[i_r][i_k] < 20 ? "text-center" : "text-left"}
                                                         border-t-solid
                                                         border-b-solid
                                                         p-t-4
@@ -94,8 +92,36 @@ function App() {
                                                         p-l-2
                                                         p
                                                         p-r-2
-                                                        ${rowMetaData[i_r][i_k] > 20 ? "break-all" : ""}`}
-                                                    key={i_k}>{row[header]}</td>
+                                                        ${(() => {
+                                                            const isSmall = rowMetaData[i_r][i_k] < 20
+                                                            const isSentence = row[k].toString().trim().split(" ").length > 1
+
+                                                            const props = []
+
+                                                            if (isSentence) {
+                                                                if (isSmall) {
+                                                                    props.push('text-center')
+                                                                } else {
+                                                                    props.push('text-left')
+                                                                }
+                                                                // props.push('hyphen-auto')
+                                                            } else {
+                                                                if (isSmall) {
+                                                                    props.push('text-center')
+                                                                } else {
+                                                                    props.push('text-left')
+                                                                    // props.push('break-all')
+                                                                }
+                                                            }
+
+                                                            if (row[k] === 'Likes to sleep at 3PM.') {
+                                                                console.log(isSentence)
+                                                                console.log(props)
+                                                            }
+
+                                                            return props.join(" ")
+                                                        })()}`}
+                                                    key={i_k}>{row[k]}</td>
                                             )
                                         }
                                     )
