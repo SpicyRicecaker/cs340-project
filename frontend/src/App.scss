@@ -1,0 +1,36 @@
+.table1 {
+  padding: 1rem;
+
+
+  font-family: monospace;
+  border-collapse: separate;
+  border-spacing: 0 0.75rem;
+}
+
+$r: 0.5rem;
+
+tr {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.tr1 {
+  margin: 0;
+
+  background-color: black;
+  color: white;
+
+  & > *:first-child {
+    border-radius: $r 0 0 $r;
+  }
+  & > *:last-child {
+    border-radius: 0 $r $r 0;
+  }
+}
+
+// .td1 :not(:first-child):not(:last-child) {
+//   border-right: 1px dotted black;
+// }
+
+.td1 {
+  border-right: 2px dashed #00000055;
+}
