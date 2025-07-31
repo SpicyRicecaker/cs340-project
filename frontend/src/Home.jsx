@@ -1,14 +1,22 @@
+import Link from './Link'
+
+const production = import.meta.env.MODE == 'production'
+
 function Home() {
 
     return (
         <>
-            <h1>Furry Friends</h1>
-            <div><a href="/view/Pets">Pets</a></div>
-            <div><a href="/view/Contacts">Contacts</a></div>
-            <div><a href="/view/PetRaces">PetRaces</a></div>
-            <div><a href="/view/Applications">Applications</a></div>
-            <div><a href="/view/AppAnswers">AppAnswers</a></div>
-            <div><a href="/view/AppQuestions">AppQuestions</a></div>
+            {!production ? <h1 className='text-1xl rounded-lg p-2 font-mono bg-white text-black border-2 border-solid shadow-md text-center text-2xl m-0 p-0'>Furry Friends!</h1> : <div></div>}
+            <br></br>
+
+            <div className='grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 [&>*]:(aspect-[1/1])'>
+
+                <Link inGrid={true} url="/view/Contacts" label="Contacts" />
+                <Link inGrid={true} url="/view/PetRaces" label="PetRaces" />
+                <Link inGrid={true} url="/view/Applications" label="Applications" />
+                <Link inGrid={true} url="/view/AppAnswers" label="AppAnswers" />
+                <Link inGrid={true} url="/view/AppQuestions" label="AppQuestions" />
+            </div>
         </>
     )
 }

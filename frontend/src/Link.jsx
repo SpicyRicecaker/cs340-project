@@ -1,0 +1,8 @@
+function Link( {url, label, inGrid} ) {
+
+    return <a href={url} className="@container p-3 rounded-lg border-2 border-solid text-center font-mono grid hover:(cursor-pointer bg-gray) visited:text-purple shadow-md">
+            <div className={`place-self-center ${inGrid ? 'text-[min(15cqh,15cqw)]' : ''}`}>{label}</div>
+        </a>
+}
+
+export default Link;

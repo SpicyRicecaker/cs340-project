@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';  // Importing useState for managing state in the component
 import { useParams } from 'react-router-dom'
+import Link from './Link'
 
 const production = import.meta.env.MODE == 'production'
 const backendURL =  `${production ? "http://classwork.engr.oregonstate.edu" : "http://classwork.engr.oregonstate.edu"}:${import.meta.env.VITE_BACKEND_PORT}/`;
@@ -19,7 +20,11 @@ function Viewer() {
             for (const r of rows) {
                 const a = []
                 for (const k of Object.keys(r)) {
-                    a.push(r[k].toString().length)
+                    if (r[k]) {
+                        a.push(r[k].toString().length)
+                    } else {
+                        a.push('')
+                    }
                 }
                 rowMetaData.push(a)
                 i++;
@@ -65,10 +70,9 @@ function Viewer() {
 
     return(
     <>
-        <a href="/">go back</a>
+        <Link inGrid={false} url="/" label="Go Back" />
         <div>
-            {production ? <h1 className='text-1xl rounded-lg p-2 font-mono bg-white text-black border-2 border-solid shadow-md text-center text-2xl m-0 p-0'>Fury Finds! (Production)</h1> : <div></div>}
-            <table className='table1 m-0 p-0 table-fixed'>
+            <table className='table1 m-0 p-0 table-fixed min-w-full'>
                 <thead className='header1'>
                         <tr className='tr1'>
                             {
@@ -97,7 +101,15 @@ function Viewer() {
                                                         p-r-2
                                                         ${(() => {
                                                             const isSmall = rowMetaData[i_r][i_k] < 20
-                                                            const isSentence = row[k].toString().trim().split(" ").length > 1
+
+                                                            let a = ""
+                                                            if (!row[k]) {
+                                                                a = 'null'
+                                                            } else {
+                                                                a = row[k]
+                                                            }
+
+                                                            const isSentence = a.toString().trim().split(" ").length > 1
 
                                                             const props = []
 
@@ -124,7 +136,7 @@ function Viewer() {
 
                                                             return props.join(" ")
                                                         })()}`}
-                                                    key={i_k}>{row[k]}</td>
+                                                    key={i_k}>{row[k] ? row[k] : <i><b>null</b></i>}</td>
                                             )
                                         }
                                     )
