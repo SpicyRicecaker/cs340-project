@@ -1,23 +1,36 @@
-// reactServer.cjs
-// Uses common JavaScript to serve the React build folder (/dist)
-
 require('dotenv').config({path: '../.env'})
 
-const express = require('express');
-const path = require('path');
-const app = express();
+import path from 'path';
 
-// Serve the static files from the React app located in the build folder '/dist'
-// React router will take over frontend routing
-app.use(express.static(path.join(__dirname, 'dist')));
+// Bun provides import.meta.dir as a reliable way to get the current directory
+const buildPath = path.join(import.meta.dir, 'dist');
+const indexPath = path.join(buildPath, 'index.html');
 
-// Handles any requests that don't match the ones above to return the React app
-// A request to '/nonExist' will redirect to the index.html where react router takes over at '/'
-app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+Bun.serve({
+  port: process.env.VITE_FRONTEND_PORT,
+
+  async fetch(req) {
+    const url = new URL(req.url);
+    const filePath = path.join(buildPath, url.pathname);
+
+    // Try to serve a static file from the 'dist' folder
+    const file = Bun.file(filePath);
+    const fileExists = await file.exists();
+
+    if (fileExists) {
+      // If the file exists, serve it
+      return new Response(file);
+    }
+
+    // If a static file is not found, serve the main index.html
+    // This allows your client-side router to take over.
+    return new Response(Bun.file(indexPath));
+  },
+
+  // A basic error handler
+  error() {
+    return new Response("Not Found", { status: 404 });
+  },
 });
 
-// Start the server and listen on the specified port
-app.listen(process.env.VITE_FRONTEND_PORT, () => {
-    console.log(`Server running: http://classwork.engr.oregonstate.edu:${process.env.VITE_FRONTEND_PORT}...`);
-});
+console.log(`Bun server running on http://localhost:${process.env.VITE_FRONTEND_PORT} 🚀`);
