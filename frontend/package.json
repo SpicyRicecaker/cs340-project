@@ -8,7 +8,7 @@
     "build": "vite build",
     "redeploy": "bun run build && bun run stop-server; bun run start-server",
     "stop-server": "bunx pm2 stop frontend",
-    "start-server": "bunx pm2 start reactServer.cjs --name='frontend'",
+    "start-server": "bunx pm2 start --interpreter bun reactServer.cjs --name='frontend'",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
