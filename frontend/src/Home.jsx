@@ -6,7 +6,8 @@ function Home() {
 
     return (
         <>
-            {!production ? <h1 className='text-1xl rounded-lg p-2 font-mono bg-white text-black border-2 border-solid shadow-md text-center text-2xl m-0 p-0'>Furry Friends!</h1> : <div></div>}
+            <h1 className='text-6xl rounded-lg p-4 font-sans border-2 border-solid shadow-md text-center text-2xl m-0 p-0'>~Furry Friends~<br></br><span className='text-3xl'>Adoption Shelter</span></h1> : <div></div>
+
             <br></br>
 
             <div className='grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 [&>*]:(aspect-[1/1])'>
