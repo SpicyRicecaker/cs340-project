@@ -169,7 +169,11 @@ function Viewer() {
                                                             if (iEdit === i_r) {
                                                                 // return <input size={!row[k] ? 1 : rowMetaData[i_r][i_k] <= 1 ? rowMetaData[i_r][i_k] : rowMetaData[i_r][i_k] - 1} type="text" className="border-none m-0 p-0 font-mono " value={row[k]}></input>
                                                                 return <div className='flex w-full h-full'>
-                                                                    <textarea className="flex-1 w-full h-[98%] m-0 p-0 border-none font-mono box-border resize-none" value={row[k]}></textarea>
+                                                                    <textarea 
+                                                                        className="flex-1 w-full h-[98%] m-0 p-0 border-none font-mono box-border resize-none"
+                                                                        value={row[k]}
+                                                                        placeholder={`${Object.keys(rows[0])[i_k]} here ...`}
+                                                                    ></textarea>
                                                                 </div>
                                                             } else {
                                                                 return row[k] ? row[k] : <i><b>null</b></i>
@@ -219,7 +223,16 @@ function Viewer() {
                         }
                     </tbody>
             </table>
-            <button>insert</button>
+            <button onClick={() => {
+                if (rows.length > 0) {
+                    const obj = {}
+                    for (const h of Object.keys(rows[0])) {
+                        obj[h] = ""
+                    }
+                    setRows([...rows, obj])
+                    setIEdit(rows.length)
+                }
+            }}>insert</button>
         </div>
     </>
     )
