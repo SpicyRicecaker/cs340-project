@@ -82,6 +82,10 @@ function Viewer() {
     return(
     <>
         <Link inGrid={false} url="/" label="Go Back" />
+        <br></br>
+        <h2 className='text-6xl rounded-lg p-4 font-sans border-2 border-solid shadow-md text-center text-lg m-0 p-0'>
+            <span className=''>{table}</span>
+        </h2>
         <div className='overflow-x-auto'>
             <table 
                 className={`table1 m-0 p-0 table-fixed w-full min-w-[${headerSize * 40}px]`}>
