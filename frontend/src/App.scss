@@ -10,6 +10,14 @@ td, h1, a {
   color: black;
 }
 
+button {
+  font-family: monospace;
+  &:hover {
+    background-color: #4c454c;
+    color: white;
+  }
+}
+
 a:hover {
   background-color: #4c454c;
   color: white;
