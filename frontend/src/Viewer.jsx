@@ -13,6 +13,8 @@ function Viewer() {
     const [rows, setRows] = useState([]);
 
     const [rowMetaData, setRowMetaData] = useState([])
+    const [headerSize, setHeaderSize] = useState(20)
+    const [iEdit, setIEdit] = useState(-1)
 
     useMemo(() => {
         if (isLoading === false) {
@@ -32,6 +34,15 @@ function Viewer() {
         }
     }, [isLoading])
 
+    useMemo(() => {
+        if (rowMetaData.length > 0) {
+
+            console.log('reduction result', rowMetaData[0].reduce((a, b) => a + b, 0))
+            console.log('current header value', headerSize)
+            setHeaderSize(rowMetaData.reduce((a, b) => a + b, 0))
+            console.log('post header value', headerSize)
+        }
+    }, [rowMetaData])
 
     // Get the data from the database
     const getData = async function () {
@@ -71,8 +82,9 @@ function Viewer() {
     return(
     <>
         <Link inGrid={false} url="/" label="Go Back" />
-        <div>
-            <table className='table1 m-0 p-0 table-fixed min-w-full'>
+        <div className='overflow-x-auto'>
+            <table 
+                className={`table1 m-0 p-0 table-fixed w-full min-w-[${headerSize * 40}px]`}>
                 <thead className='header1'>
                         <tr className='tr1'>
                             {
@@ -80,6 +92,20 @@ function Viewer() {
                                     <th className='th1 p-4' key={header}>{header}</th>
                                 ))
                             }
+                            {(() => {
+                                // if (iEdit === -1) {
+                                    return <>
+                                        <th className='th1 p-4'>&nbsp;</th>
+                                        <th className='th1 p-4'>&nbsp;</th>
+                                    </>
+                                // } else {
+                                //     return <>
+                                //         <th className='th1 p-4'>&nbsp;</th>
+                                //         <th className='th1 p-4'>&nbsp;</th>
+                                //         <th className='th1 p-4'>&nbsp;</th>
+                                //     </>
+                                // }
+                            })()}
                         </tr>
                     </thead>
                     <tbody>
@@ -99,6 +125,8 @@ function Viewer() {
                                                         p-l-2
                                                         p
                                                         p-r-2
+                                                        h-[1px]
+                                                        ${iEdit === i_r ? "bg-gray" : ''}
                                                         ${(() => {
                                                             const isSmall = rowMetaData[i_r][i_k] < 20
 
@@ -136,16 +164,62 @@ function Viewer() {
 
                                                             return props.join(" ")
                                                         })()}`}
-                                                    key={i_k}>{row[k] ? row[k] : <i><b>null</b></i>}</td>
+                                                    key={i_k}>{
+                                                        (() => {
+                                                            if (iEdit === i_r) {
+                                                                // return <input size={!row[k] ? 1 : rowMetaData[i_r][i_k] <= 1 ? rowMetaData[i_r][i_k] : rowMetaData[i_r][i_k] - 1} type="text" className="border-none m-0 p-0 font-mono " value={row[k]}></input>
+                                                                return <div className='flex w-full h-full'>
+                                                                    <textarea className="flex-1 w-full h-[98%] m-0 p-0 border-none font-mono box-border resize-none" value={row[k]}></textarea>
+                                                                </div>
+                                                            } else {
+                                                                return row[k] ? row[k] : <i><b>null</b></i>
+                                                            }
+                                                        })()
+                                                    }</td>
                                             )
                                         }
                                     )
                                     }
+                                    <td className='td1
+                                                        border-t-solid
+                                                        border-b-solid
+                                                        p-t-4
+                                                        p-b-4
+                                                        p-l-2
+                                                        p
+                                                        p-r-2'>
+                                        <div className='flex flex-col'>
+                                            <button className="p-0" onClick={() => {
+                                                setIEdit(i_r)
+                                            }}>edit</button>
+                                            <button onClick={() => {
+                                                // if (window.confirm('are you sure you want to cancel')) {
+                                                    setIEdit(-1)
+                                                // }
+                                            }}>cancel</button>
+                                            <button onClick={() => {
+                                                setIEdit(-1)
+                                            }}>apply</button>
+                                        </div>
+                                    </td>
+                                    <td className='td1
+                                                    border-t-solid
+                                                    border-b-solid
+                                                    p-t-4
+                                                    p-b-4
+                                                    p-l-2
+                                                    p
+                                                    p-r-2'>
+                                    <div className='flex flex-col'>
+                                        <button className='flex-1'>delete</button>
+                                    </div>
+                                    </td>
                                 </tr>
                             ))
                         }
                     </tbody>
             </table>
+            <button>insert</button>
         </div>
     </>
     )
