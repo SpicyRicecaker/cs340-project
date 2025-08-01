@@ -8,5 +8,8 @@ export default defineConfig({
     react(),
     UnoCSS()
   ],
+  server: {
+    allowedHosts: ['classwork.engr.oregonstate.edu']
+  },
   envDir: '../', 
 })

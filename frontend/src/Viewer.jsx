@@ -32,7 +32,7 @@ function Viewer() {
                 i++;
             }
         }
-    }, [isLoading])
+    }, [isLoading, rows])
 
     useMemo(() => {
         if (rowMetaData.length > 0) {
