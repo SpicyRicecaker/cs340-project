@@ -6,18 +6,16 @@ const production = import.meta.env.MODE == 'production'
 const backendURL =  `${production ? "http://classwork.engr.oregonstate.edu" : "http://classwork.engr.oregonstate.edu"}:${import.meta.env.VITE_BACKEND_PORT}/`;
 
 function Viewer() {
+    console.log('rerender')
     const { table } = useParams();
 
     // Set up a state variable `message` to store and display the backend response
     const [isLoading, setIsLoading] = useState(true);
     const [rows, setRows] = useState([]);
-
-    const [rowMetaData, setRowMetaData] = useState([])
-    const [headerSize, setHeaderSize] = useState(20)
     const [iEdit, setIEdit] = useState(-1)
-    const [columnNumber, setColumnNumber] = useState(0)
 
-    useMemo(() => {
+    const [rowMetaData, headerSize, columnNumber] = useMemo(() => {
+        console.log('memo run')
         if (isLoading === false) {
             let i = 0;
             const newRowMetaData = []
@@ -33,24 +31,15 @@ function Viewer() {
                 newRowMetaData.push(a)
                 i++;
             }
-            console.log('setting row metadata', newRowMetaData)
-            setRowMetaData(newRowMetaData)
-        }
-    }, [isLoading, rows])
 
-    useMemo(() => {
-        console.log('receiving row metadata')
-        if (rowMetaData.length > 0) {
+            const headerSize = newRowMetaData.reduce((a, b) => a + b, 0)
+            const columnWidth = newRowMetaData[0].length
 
-            // console.log('reduction result', rowMetaData[0].reduce((a, b) => a + b, 0))
-            // console.log('current header value', headerSize)
-            console.log('hi world')
-            setHeaderSize(rowMetaData.reduce((a, b) => a + b, 0))
-            console.log('columnWidth', rowMetaData[0].length)
-            setColumnNumber(rowMetaData[0].length)
-            // console.log('post header value', headerSize)
+            return [newRowMetaData, headerSize, columnWidth]
+        } else {
+            return [[], 20, 0]
         }
-    }, [rowMetaData])
+    }, [rows])
 
     // Get the data from the database
     const getData = async function () {
@@ -72,6 +61,40 @@ function Viewer() {
             setIsLoading(false);
         }
     }
+
+    const textCenterProps = (i_r, i_k, row, k) => {
+        const isSmall = rowMetaData[i_r][i_k] < 20
+
+        let a = ""
+        if (!row[k]) {
+            a = 'null'
+        } else {
+            a = row[k]
+        }
+
+        const isSentence = a.toString().trim().split(" ").length > 1
+
+        const props = []
+
+        if (isSentence) {
+            if (isSmall) {
+                props.push('text-center')
+            } else {
+                props.push('text-left')
+            }
+            props.push('hyphen-auto')
+        } else {
+            if (isSmall) {
+                props.push('text-center')
+            } else {
+                props.push('text-left')
+                props.push('break-all')
+            }
+        }
+
+        return props.join(" ")
+    }
+
 
     // Load table on page load
     useEffect(() => {
@@ -96,7 +119,7 @@ function Viewer() {
         </h2>
         <div className='overflow-x-auto'>
             <table 
-                style={{gridTemplateColumns: `repeat(${columnNumber}, minmax(min-content, 1fr))`}}
+                style={{gridTemplateColumns: `repeat(${columnNumber + 2}, minmax(min-content, 1fr))`}}
                 className={`table1 m-0 p-0 table-fixed w-full min-w-[${headerSize * 40}px]`}>
                 <thead className='header1'>
                         <tr className='tr1'>
@@ -139,55 +162,32 @@ function Viewer() {
                                                         p
                                                         p-r-2
                                                         grid
+                                                        text-sm
+                                                        relative
                                                         ${iEdit === i_r ? "bg-gray" : ''}
-                                                        ${(() => {
-                                                            const isSmall = rowMetaData[i_r][i_k] < 20
-
-                                                            let a = ""
-                                                            if (!row[k]) {
-                                                                a = 'null'
-                                                            } else {
-                                                                a = row[k]
-                                                            }
-
-                                                            const isSentence = a.toString().trim().split(" ").length > 1
-
-                                                            const props = []
-
-                                                            if (isSentence) {
-                                                                if (isSmall) {
-                                                                    props.push('text-center')
-                                                                } else {
-                                                                    props.push('text-left')
-                                                                }
-                                                                props.push('hyphen-auto')
-                                                            } else {
-                                                                if (isSmall) {
-                                                                    props.push('text-center')
-                                                                } else {
-                                                                    props.push('text-left')
-                                                                    props.push('break-all')
-                                                                }
-                                                            }
-
-                                                            return props.join(" ")
-                                                        })()}`}
-                                                    key={i_k}>{
-                                                        (() => {
-                                                            if (iEdit === i_r) {
-                                                                // return <input size={!row[k] ? 1 : rowMetaData[i_r][i_k] <= 1 ? rowMetaData[i_r][i_k] : rowMetaData[i_r][i_k] - 1} type="text" className="border-none m-0 p-0 font-mono " value={row[k]}></input>
-                                                                return <div className='flex w-full h-full h-[100cqh]'>
-                                                                    <textarea 
-                                                                        className="place-self-center block flex-1 w-full h-full m-0 p-0 border-none font-mono box-border resize-none"
-                                                                        value={row[k]}
-                                                                        placeholder={`${Object.keys(rows[0])[i_k]} here ...`}
-                                                                    ></textarea>
-                                                                </div>
-                                                            } else {
-                                                                return row[k] ? row[k] : <i><b>null</b></i>
-                                                            }
-                                                        })()
-                                                    }</td>
+                                                        ${textCenterProps(i_r, i_k, row, k)}`}
+                                                    key={i_k}>
+                                                            {row[k] ? row[k] : <i><b>null</b></i>}
+                                                            {iEdit == i_r ? 
+                                                                <textarea 
+                                                                    className={`
+                                                                        text-sm 
+                                                                        place-self-center
+                                                                        w-full
+                                                                        h-full
+                                                                        m-0
+                                                                        p-inherit
+                                                                        border-none
+                                                                        font-mono
+                                                                        box-border
+                                                                        resize-none
+                                                                        absolute
+                                                                        ${textCenterProps(i_r, i_k, row, k)}
+                                                                        `}
+                                                                    defaultValue={row[k]}
+                                                                    placeholder={`${Object.keys(rows[0])[i_k]} here ...`}
+                                                                ></textarea> : <></>}
+                                                    </td>
                                             )
                                         }
                                     )
