@@ -15,10 +15,12 @@ function Viewer() {
     const [rowMetaData, setRowMetaData] = useState([])
     const [headerSize, setHeaderSize] = useState(20)
     const [iEdit, setIEdit] = useState(-1)
+    const [columnNumber, setColumnNumber] = useState(0)
 
     useMemo(() => {
         if (isLoading === false) {
             let i = 0;
+            const newRowMetaData = []
             for (const r of rows) {
                 const a = []
                 for (const k of Object.keys(r)) {
@@ -28,19 +30,25 @@ function Viewer() {
                         a.push('')
                     }
                 }
-                rowMetaData.push(a)
+                newRowMetaData.push(a)
                 i++;
             }
+            console.log('setting row metadata', newRowMetaData)
+            setRowMetaData(newRowMetaData)
         }
     }, [isLoading, rows])
 
     useMemo(() => {
+        console.log('receiving row metadata')
         if (rowMetaData.length > 0) {
 
-            console.log('reduction result', rowMetaData[0].reduce((a, b) => a + b, 0))
-            console.log('current header value', headerSize)
+            // console.log('reduction result', rowMetaData[0].reduce((a, b) => a + b, 0))
+            // console.log('current header value', headerSize)
+            console.log('hi world')
             setHeaderSize(rowMetaData.reduce((a, b) => a + b, 0))
-            console.log('post header value', headerSize)
+            console.log('columnWidth', rowMetaData[0].length)
+            setColumnNumber(rowMetaData[0].length)
+            // console.log('post header value', headerSize)
         }
     }, [rowMetaData])
 
@@ -63,12 +71,12 @@ function Viewer() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }
 
     // Load table on page load
     useEffect(() => {
         getData();
-    }, []);
+    }, [])
 
     if (isLoading) {
         return <div>Loading data, please wait...</div>;
@@ -88,6 +96,7 @@ function Viewer() {
         </h2>
         <div className='overflow-x-auto'>
             <table 
+                style={{gridTemplateColumns: `repeat(${columnNumber}, minmax(min-content, 1fr))`}}
                 className={`table1 m-0 p-0 table-fixed w-full min-w-[${headerSize * 40}px]`}>
                 <thead className='header1'>
                         <tr className='tr1'>
@@ -129,7 +138,7 @@ function Viewer() {
                                                         p-l-2
                                                         p
                                                         p-r-2
-                                                        h-[1px]
+                                                        grid
                                                         ${iEdit === i_r ? "bg-gray" : ''}
                                                         ${(() => {
                                                             const isSmall = rowMetaData[i_r][i_k] < 20
@@ -161,20 +170,15 @@ function Viewer() {
                                                                 }
                                                             }
 
-                                                            if (row[k] === 'Likes to sleep at 3PM.') {
-                                                                console.log(isSentence)
-                                                                console.log(props)
-                                                            }
-
                                                             return props.join(" ")
                                                         })()}`}
                                                     key={i_k}>{
                                                         (() => {
                                                             if (iEdit === i_r) {
                                                                 // return <input size={!row[k] ? 1 : rowMetaData[i_r][i_k] <= 1 ? rowMetaData[i_r][i_k] : rowMetaData[i_r][i_k] - 1} type="text" className="border-none m-0 p-0 font-mono " value={row[k]}></input>
-                                                                return <div className='flex w-full h-full'>
+                                                                return <div className='flex w-full h-full h-[100cqh]'>
                                                                     <textarea 
-                                                                        className="flex-1 w-full h-[98%] m-0 p-0 border-none font-mono box-border resize-none"
+                                                                        className="place-self-center block flex-1 w-full h-full m-0 p-0 border-none font-mono box-border resize-none"
                                                                         value={row[k]}
                                                                         placeholder={`${Object.keys(rows[0])[i_k]} here ...`}
                                                                     ></textarea>
