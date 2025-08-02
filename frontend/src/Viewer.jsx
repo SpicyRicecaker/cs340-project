@@ -195,43 +195,36 @@ function Viewer() {
                                     <td className='td1
                                                         border-t-solid
                                                         border-b-solid
-                                                        p-t-4
-                                                        p-b-4
-                                                        p-l-2
-                                                        p
-                                                        p-r-2'>
-                                        <div className='flex flex-col'>
-                                            <button className="p-0" onClick={() => {
+                                                        grid
+                                                        grid-rows-3
+                                                        gap-2
+                                                        p-2'>
+                                            <button className="p-t-2 p-b-2" onClick={() => {
                                                 setIEdit(i_r)
                                             }}>edit</button>
-                                            <button onClick={() => {
+                                            <button className="p-t-2 p-b-2" onClick={() => {
                                                 // if (window.confirm('are you sure you want to cancel')) {
                                                     setIEdit(-1)
                                                 // }
                                             }}>cancel</button>
-                                            <button onClick={() => {
+                                            <button  className="p-t-2 p-b-2" onClick={() => {
                                                 setIEdit(-1)
                                             }}>apply</button>
-                                        </div>
                                     </td>
                                     <td className='td1
                                                     border-t-solid
                                                     border-b-solid
-                                                    p-t-4
-                                                    p-b-4
-                                                    p-l-2
-                                                    p
-                                                    p-r-2'>
-                                    <div className='flex flex-col'>
+                                                    p-2'>
                                         <button className='flex-1'>delete</button>
-                                    </div>
                                     </td>
                                 </tr>
                             ))
                         }
                     </tbody>
             </table>
-            <button onClick={() => {
+            <button 
+                className='p-2 m-1'
+                onClick={() => {
                 if (rows.length > 0) {
                     const obj = {}
                     for (const h of Object.keys(rows[0])) {
