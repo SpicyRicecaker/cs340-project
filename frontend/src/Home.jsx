@@ -11,7 +11,7 @@ function Home() {
             <br></br>
 
             <div className='grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 [&>*]:(aspect-[1/1])'>
-
+                <Link inGrid={true} url="/view/Pets" label="Pets" />
                 <Link inGrid={true} url="/view/Contacts" label="Contacts" />
                 <Link inGrid={true} url="/view/PetRaces" label="PetRaces" />
                 <Link inGrid={true} url="/view/Applications" label="Applications" />
