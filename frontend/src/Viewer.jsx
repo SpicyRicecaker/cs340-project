@@ -117,7 +117,7 @@ function Viewer() {
         <h2 className='text-6xl rounded-lg p-4 font-sans border-2 border-solid shadow-md text-center text-lg m-0 p-0'>
             <span className=''>{table}</span>
         </h2>
-        <div className='overflow-x-auto'>
+        <div className='p-b-3 overflow-x-auto'>
             <table 
                 style={{gridTemplateColumns: `repeat(${columnNumber + 2}, minmax(min-content, 1fr))`}}
                 className={`table1 m-0 p-0 table-fixed w-full min-w-[${headerSize * 40}px]`}>
@@ -197,17 +197,17 @@ function Viewer() {
                                                         border-b-solid
                                                         grid
                                                         grid-rows-3
-                                                        gap-2
+                                                        gap-1
                                                         p-2'>
-                                            <button className="p-t-2 p-b-2" onClick={() => {
+                                            <button className={`${iEdit === i_r ? 'opacity-50 pointer-events-none' : ''}`} onClick={() => {
                                                 setIEdit(i_r)
                                             }}>edit</button>
-                                            <button className="p-t-2 p-b-2" onClick={() => {
+                                            <button className={`${iEdit === i_r ? '' : 'opacity-50 pointer-events-none'}`} onClick={() => {
                                                 // if (window.confirm('are you sure you want to cancel')) {
                                                     setIEdit(-1)
                                                 // }
                                             }}>cancel</button>
-                                            <button  className="p-t-2 p-b-2" onClick={() => {
+                                            <button  className={`${iEdit === i_r ? '' : 'opacity-50 pointer-events-none'}`} onClick={() => {
                                                 setIEdit(-1)
                                             }}>apply</button>
                                     </td>
@@ -222,8 +222,9 @@ function Viewer() {
                         }
                     </tbody>
             </table>
+        </div>
             <button 
-                className='p-2 m-1'
+                className='p-2 w-full m-t-[0.5rem] rounded-lg border-2 border-solid'
                 onClick={() => {
                 if (rows.length > 0) {
                     const obj = {}
@@ -234,7 +235,6 @@ function Viewer() {
                     setIEdit(rows.length)
                 }
             }}>insert</button>
-        </div>
     </>
     )
 }
