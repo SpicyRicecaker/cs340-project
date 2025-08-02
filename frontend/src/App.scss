@@ -38,10 +38,15 @@ table {
 }
 
 button {
+  border: 1px solid black;
+  background-color: #fefaf9;
+  border-radius: 0.25rem;
+
   font-family: monospace;
   &:hover {
     background-color: #4c454c;
     color: white;
+    border: 1px solid white;
   }
 }
 
@@ -56,7 +61,6 @@ a:visited {
 
 .table1 {
   padding: 1rem;
-
 
   font-family: monospace;
   border-collapse: separate;
