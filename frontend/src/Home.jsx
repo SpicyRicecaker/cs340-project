@@ -6,7 +6,7 @@ function Home() {
 
     return (
         <>
-            <h1 className='text-6xl rounded-lg p-4 font-sans border-2 border-solid shadow-md text-center text-2xl m-0 p-0'>~Furry Friends~<br></br><span className='text-3xl'>Adoption Shelter</span></h1> : <div></div>
+            <h1 className='text-6xl rounded-lg p-4 font-sans border-2 border-solid shadow-md text-center text-2xl m-0 p-0'>~Furry Friends~<br></br><span className='text-3xl'>Adoption Shelter</span></h1>
 
             <br></br>
 
@@ -21,7 +21,9 @@ function Home() {
 
             <br></br>
 
-            <button className='text-6xl rounded-lg p-4 font-sans border-2 border-solid border-white shadow-md text-center text-2xl m-0 p-0 hover:cursor-pointer'>reset</button>
+            <div className='w-full flex justify-center'>
+                <button className='w-full text-[15cqh] rounded-lg p-4 font-sans border-2 border-solid border:black hover:border-white shadow-md text-center text-2xl m-0 p-0 hover:cursor-pointer'>reset</button>
+            </div>
         </>
     )
 }
