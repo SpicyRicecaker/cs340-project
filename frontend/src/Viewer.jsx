@@ -205,7 +205,7 @@ function Viewer() {
                                                                         ${textCenterProps(i_r, i_k, row, k)}
                                                                         `}
                                                                     defaultValue={row[k]}
-                                                                    placeholder={`${Object.keys(rows[0])[i_k]} here ...`}
+                                                                    placeholder={`${headers[i_k]} here ...`}
                                                                 ></textarea> : <></>}
                                                     </td>
                                             )
@@ -235,7 +235,7 @@ function Viewer() {
                                                     border-t-solid
                                                     border-b-solid
                                                     p-2'>
-                                        <button onClick={(e) => delId(i_r, row[Object.keys(rows[0])[0]])} className='flex-1'>delete</button>
+                                        <button onClick={(e) => delId(i_r, row[headers[0]])} className='flex-1'>delete</button>
                                     </td>
                                 </tr>
                             ))
@@ -248,8 +248,8 @@ function Viewer() {
                 onClick={() => {
                 if (rows.length > 0) {
                     const obj = {}
-                    for (const h of Object.keys(rows[0])) {
-                        obj[h] = ""
+                    for (const header of headers) {
+                        obj[header] = ""
                     }
                     setRows([...rows, obj])
                     setIEdit(rows.length)
