@@ -4,6 +4,10 @@ const production = import.meta.env.MODE == 'production'
 
 function Home() {
 
+    const reset = async () => {
+
+    }
+
     return (
         <>
             <h1 className='text-6xl rounded-lg p-4 font-sans border-2 border-solid shadow-md text-center text-2xl m-0 p-0'>~Furry Friends~<br></br><span className='text-3xl'>Adoption Shelter</span></h1>
@@ -21,7 +25,7 @@ function Home() {
 
             <br></br>
 
-            <div className='w-full flex justify-center'>
+            <div className='w-full flex justify-center' onClick={reset}>
                 <button className='w-full text-[15cqh] rounded-lg p-4 font-sans border-2 border-solid border:black hover:border-white shadow-md text-center text-2xl m-0 p-0 hover:cursor-pointer'>reset</button>
             </div>
         </>
