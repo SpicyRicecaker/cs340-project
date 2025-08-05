@@ -5,6 +5,8 @@ import { Elysia } from 'elysia';
 import { cors } from '@elysiajs/cors';
 import db from './db-connector.js';
 
+require('dotenv').config({path: '../.env'})
+
 // The 'path' module is not needed for this conversion
 // since Elysia's routing handles paths directly.
 
