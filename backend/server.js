@@ -26,6 +26,23 @@ const app = new Elysia();
 // Use the CORS plugin to handle CORS headers automatically
 app.use(cors());
 
+app.put('/delete/:table/:id', async ({params, set}) => {
+  const { table, id } = params;
+
+  try {
+    const query = `call sp_delete${ table.substring(0, table.length - 1) }ByID(${id});`
+    // console.log('calling...')
+    await db.query(query)
+    // console.log('done calling.')
+    return { response: 'Successfully delete.'}
+  } catch (error) {
+    console.error('Error executing query:', error);
+    set.status = 500;
+    return { error: 'An error occurred on the server.' };
+  }
+
+})
+
 app.put('/reset', async () => {
   try {
     const query = 'call sp_resetAll();'

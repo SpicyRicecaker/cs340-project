@@ -95,6 +95,18 @@ function Viewer() {
         return props.join(" ")
     }
 
+    const delId = async (id) => {
+        // console.log(`fetching ${backendURL}reset`)
+        const res = await fetch(`${backendURL}delete/${table}/${id}`, {
+            method: 'PUT'
+        })
+        if (res.ok) {
+            console.log('yayy!!!')
+        } else {
+            console.log("error, couldn't reset")
+        }
+        reload()
+    }
 
     // Load table on page load
     useEffect(() => {
@@ -215,7 +227,7 @@ function Viewer() {
                                                     border-t-solid
                                                     border-b-solid
                                                     p-2'>
-                                        <button className='flex-1'>delete</button>
+                                        <button onClick={(e) => delId(row[Object.keys(rows[0])[0]])} className='flex-1'>delete</button>
                                     </td>
                                 </tr>
                             ))
