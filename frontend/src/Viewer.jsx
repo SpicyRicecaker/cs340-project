@@ -1,9 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';  // Importing useState for managing state in the component
 import { useParams } from 'react-router-dom'
+import { backendURL } from './constants';
 import Link from './Link'
-
-const production = import.meta.env.MODE == 'production'
-const backendURL =  `${production ? "http://classwork.engr.oregonstate.edu" : "http://classwork.engr.oregonstate.edu"}:${import.meta.env.VITE_BACKEND_PORT}/`;
 
 function Viewer() {
     console.log('rerender')
@@ -17,6 +15,7 @@ function Viewer() {
     const [rowMetaData, headerSize, columnNumber] = useMemo(() => {
         console.log('memo run')
         if (isLoading === false) {
+            if (rows.length === 0) return [[], 0, 0]
             let i = 0;
             const newRowMetaData = []
             for (const r of rows) {
@@ -47,7 +46,7 @@ function Viewer() {
         if (rows.length > 0) return; // Skip if data is already fetched
         try {
             // Make a GET request to the backend
-            const response = await fetch(`${backendURL}${table}`);
+            const response = await fetch(`${backendURL}/${table}`);
             
             // Convert the response into JSON format
             const rows = await response.json();
@@ -95,17 +94,16 @@ function Viewer() {
         return props.join(" ")
     }
 
-    const delId = async (id) => {
+    const delId = async (i_r, id) => {
         // console.log(`fetching ${backendURL}reset`)
-        const res = await fetch(`${backendURL}delete/${table}/${id}`, {
+        const res = await fetch(`${backendURL}/delete/${table}/${id}`, {
             method: 'PUT'
         })
-        if (res.ok) {
-            console.log('yayy!!!')
-        } else {
+        if (!res.ok) {
             console.log("error, couldn't reset")
+            return
         }
-        reload()
+        setRows([...rows.slice(0, i_r), ...rows.slice(i_r + 1)])
     }
 
     // Load table on page load
@@ -119,7 +117,7 @@ function Viewer() {
 
     // If not loading, and there's no data, show a message
     if (rows.length === 0) {
-        return <div>No data found.</div>
+        return <div className='text-white font-mono text-lg'>No data found.</div>
     }
 
     return(
@@ -227,7 +225,7 @@ function Viewer() {
                                                     border-t-solid
                                                     border-b-solid
                                                     p-2'>
-                                        <button onClick={(e) => delId(row[Object.keys(rows[0])[0]])} className='flex-1'>delete</button>
+                                        <button onClick={(e) => delId(i_r, row[Object.keys(rows[0])[0]])} className='flex-1'>delete</button>
                                     </td>
                                 </tr>
                             ))
