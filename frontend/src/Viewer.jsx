@@ -13,10 +13,11 @@ function Viewer() {
     const [rows, setRows] = useState([])
     const [iEdit, setIEdit] = useState(-1)
 
-    const [rowMetaData, headerSize, columnNumber] = useMemo(() => {
-        console.log('memo run')
-        if (isLoading === false) {
-            if (rows.length === 0) return [[], 0, 0]
+    const [rowMetaData, columnNumber] = useMemo(() => {
+        if (!isLoading) {
+            const newColumnWidth = headers.length
+            if (rows.length === 0) return [[], newColumnWidth]
+
             let i = 0;
             const newRowMetaData = []
             for (const r of rows) {
@@ -32,12 +33,9 @@ function Viewer() {
                 i++;
             }
 
-            const headerSize = newRowMetaData.reduce((a, b) => a + b, 0)
-            const columnWidth = newRowMetaData[0].length
-
-            return [newRowMetaData, headerSize, columnWidth]
+            return [newRowMetaData, newColumnWidth]
         } else {
-            return [[], 20, 0]
+            return [[], 0]
         }
     }, [rows])
 
@@ -140,7 +138,7 @@ function Viewer() {
         <div className='p-b-3 overflow-x-auto'>
             <table 
                 style={{gridTemplateColumns: `repeat(${columnNumber + 2}, minmax(min-content, 1fr))`}}
-                className={`table1 m-0 p-0 table-fixed w-full min-w-[${headerSize * 40}px]`}>
+                className={`table1 m-0 p-0 table-fixed w-full`}>
                 <thead className='header1'>
                         <tr className='tr1'>
                             {
