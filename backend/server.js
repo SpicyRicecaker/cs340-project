@@ -26,6 +26,20 @@ const app = new Elysia();
 // Use the CORS plugin to handle CORS headers automatically
 app.use(cors());
 
+app.put('/reset', async () => {
+  try {
+    const query = 'call sp_resetAll();'
+    // console.log('calling...')
+    await db.query(query)
+    // console.log('done calling.')
+    return { response: 'Successfully reset database.'}
+  } catch (error) {
+    console.error('Error executing query:', error);
+    set.status = 500;
+    return { error: 'An error occurred on the server.' };
+  }
+})
+
 app.get('/:table', async ({ params, set }) => {
   const { table } = params;
 

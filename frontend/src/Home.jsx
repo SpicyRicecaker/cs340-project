@@ -1,11 +1,21 @@
 import Link from './Link'
 
 const production = import.meta.env.MODE == 'production'
+const backendURL =  `${production ? "http://classwork.engr.oregonstate.edu:${import.meta.env.VITE_BACKEND_PORT}/"
+                                  : "http://localhost:3000/"}`;
 
 function Home() {
 
     const reset = async () => {
-
+        // console.log(`fetching ${backendURL}reset`)
+        const res = await fetch(`${backendURL}reset`, {
+            method: 'PUT'
+        })
+        if (res.ok) {
+            console.log('yayy!!!')
+        } else {
+            console.log("error, couldn't reset")
+        }
     }
 
     return (
