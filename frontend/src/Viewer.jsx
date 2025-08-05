@@ -9,7 +9,8 @@ function Viewer() {
 
     // Set up a state variable `message` to store and display the backend response
     const [isLoading, setIsLoading] = useState(true);
-    const [rows, setRows] = useState([]);
+    const [headers, setHeaders] = useState([])
+    const [rows, setRows] = useState([])
     const [iEdit, setIEdit] = useState(-1)
 
     const [rowMetaData, headerSize, columnNumber] = useMemo(() => {
@@ -45,14 +46,23 @@ function Viewer() {
         setIsLoading(true);
         if (rows.length > 0) return; // Skip if data is already fetched
         try {
-            // Make a GET request to the backend
-            const response = await fetch(`${backendURL}/${table}`);
-            
-            // Convert the response into JSON format
-            const rows = await response.json();
-            
-            // Update the message state with the response data
-            setRows(rows);
+            let responses = (await Promise.allSettled([fetch(`${backendURL}/${table}/description`), fetch(`${backendURL}/${table}/contents`)])).map((p) => p.value)
+            responses = (await Promise.allSettled(responses.map((r) => {
+                if (!r.ok) {
+                    return []
+                } else {
+                    return r.json()
+                }
+            }))).map((p) => p.value)
+
+            if (responses[0].length > 0) {
+                const tHeaders = responses[0][0].map((s) => s.Field)
+                setHeaders(tHeaders)
+            } else {
+                setHeaders([])
+            }
+
+            setRows(responses[1]);
         } catch (error) {
           // If the API call fails, print the error to the console
           console.log(error);
@@ -111,14 +121,14 @@ function Viewer() {
         getData();
     }, [])
 
-    if (isLoading) {
-        return <div>Loading data, please wait...</div>;
-    }
+    // if (isLoading) {
+    //     return <div>Loading data, please wait...</div>;
+    // }
 
     // If not loading, and there's no data, show a message
-    if (rows.length === 0) {
-        return <div className='text-white font-mono text-lg'>No data found.</div>
-    }
+    // if (rows.length === 0) {
+    //     return <div className='text-white font-mono text-lg'>No data found.</div>
+    // }
 
     return(
     <>
@@ -134,7 +144,7 @@ function Viewer() {
                 <thead className='header1'>
                         <tr className='tr1'>
                             {
-                                Object.keys(rows[0]).map((header) => (
+                                headers.map((header) => (
                                     <th className='th1 p-4' key={header}>{header}</th>
                                 ))
                             }

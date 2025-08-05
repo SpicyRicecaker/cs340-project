@@ -57,7 +57,28 @@ app.put('/reset', async () => {
   }
 })
 
-app.get('/:table', async ({ params, set }) => {
+app.get('/:table/description', async ({ params, set }) => {
+  const { table } = params;
+
+  // --- Security Check ---
+  if (!ALLOWED_TABLES.has(table)) {
+    // Elysia's 'set' object handles the status and headers for you
+    set.status = 400;
+    return { error: 'Invalid table specified.' };
+  }
+
+  try {
+    const query = `DESCRIBE ${table};`;
+    const headers = await db.query(query);
+    return headers;
+  } catch (error) {
+    console.error('Error executing query:', error);
+    set.status = 500;
+    return { error: 'An error occurred on the server.' };
+  }
+});
+
+app.get('/:table/contents', async ({ params, set }) => {
   const { table } = params;
 
   // --- Security Check ---
