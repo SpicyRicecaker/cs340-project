@@ -111,7 +111,7 @@ function Viewer() {
             console.log("error, couldn't reset")
             return
         }
-        setRows([...rows.slice(0, i_r), ...rows.slice(i_r + 1)])
+        setRows(rows.filter((_, i) => i !== i_r))
     }
 
     // Load table on page load
@@ -244,14 +244,12 @@ function Viewer() {
             <button 
                 className='p-2 w-full m-t-[0.5rem] rounded-lg border-2 border-solid'
                 onClick={() => {
-                if (rows.length > 0) {
                     const obj = {}
                     for (const header of headers) {
                         obj[header] = ""
                     }
                     setRows([...rows, obj])
                     setIEdit(rows.length)
-                }
             }}>insert</button>
     </>
     )

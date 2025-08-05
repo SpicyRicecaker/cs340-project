@@ -33,7 +33,7 @@ function Home() {
             <br></br>
 
             <div className='w-full flex justify-center' onClick={reset}>
-                <button className='w-full text-[15cqh] rounded-lg p-4 font-sans border-2 border-solid border:black hover:border-white shadow-md text-center text-2xl m-0 p-0 hover:cursor-pointer'>reset</button>
+                <button className='w-full text-[15cqh] rounded-lg p-4 font-mono border-2 border-solid border:black hover:border-white shadow-md text-center text-2xl m-0 p-0 hover:cursor-pointer'>reset</button>
             </div>
         </>
     )
