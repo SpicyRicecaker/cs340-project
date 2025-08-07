@@ -153,6 +153,7 @@ BEGIN
 
     -- Re-enable Foreign Key Checks and Commit
     SET FOREIGN_KEY_CHECKS = 1;
+    SET AUTOCOMMIT = 1;
     COMMIT;
 END //
 DELIMITER ;

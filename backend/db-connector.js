@@ -1,5 +1,6 @@
 // Get an instance of mysql we can use in the app
-const mysql = require("mysql2");
+import mysql from 'mysql2'
+import { config } from 'dotenv'
 
 // Create a 'connection pool' using the provided credentials
 // const pool = mysql.createPool({
@@ -11,7 +12,7 @@ const mysql = require("mysql2");
 //     database          : '***REDACTED***'
 // }).promise(); // This makes it so we can use async / await rather than callbacks
 
-require('dotenv').config()
+config()
 
 const pool = mysql.createPool({
     waitForConnections: true,

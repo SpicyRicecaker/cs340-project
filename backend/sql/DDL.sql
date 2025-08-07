@@ -165,4 +165,5 @@ VALUES
 
 -- Re-enable Foreign Key Checks
 SET FOREIGN_KEY_CHECKS = 1;
+SET AUTOCOMMIT = 1;
 COMMIT;
