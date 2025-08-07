@@ -64,6 +64,7 @@ function Viewer() {
             } else {
                 setHeaders([])
             }
+            console.log(responses[1]);
 
             setRows(responses[1]);
         } catch (error) {
