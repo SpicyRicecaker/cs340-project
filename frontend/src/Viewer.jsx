@@ -13,6 +13,11 @@ function Viewer() {
     const [rows, setRows] = useState([])
     const [iEdit, setIEdit] = useState(-1)
 
+    const disabled = table !== 'Applications'
+    console.log(disabled)
+    const disabledClassList = "opacity-50 hover:cursor-not-allowed pointer-events-none"
+    // ${disabled ? disabledClassList : ''}
+
     const [rowMetaData, columnNumber] = useMemo(() => {
         if (!isLoading) {
             const newColumnWidth = headers.length
@@ -103,6 +108,7 @@ function Viewer() {
     }
 
     const delId = async (i_r, id) => {
+        console.log(`sending request ${backendURL}/delete/${table}/${id}`)
         // console.log(`fetching ${backendURL}reset`)
         const res = await fetch(`${backendURL}/delete/${table}/${id}`, {
             method: 'PUT'
@@ -217,7 +223,7 @@ function Viewer() {
                                                         grid-rows-3
                                                         gap-1
                                                         p-2'>
-                                            <button className={`${iEdit === i_r ? 'opacity-50 pointer-events-none' : ''}`} onClick={() => {
+                                            <button className={`${iEdit === i_r ? 'opacity-50 pointer-events-none' : ''} ${disabled ? disabledClassList : ''}`} onClick={() => {
                                                 setIEdit(i_r)
                                             }}>edit</button>
                                             <button className={`${iEdit === i_r ? '' : 'opacity-50 pointer-events-none'}`} onClick={() => {
@@ -233,7 +239,7 @@ function Viewer() {
                                                     border-t-solid
                                                     border-b-solid
                                                     p-2'>
-                                        <button onClick={(e) => delId(i_r, row[headers[0]])} className='flex-1'>delete</button>
+                                        <button className={`flex-1 ${disabled ? disabledClassList : ''}`} onClick={(e) => delId(i_r, row[headers[0]])}>delete</button>
                                     </td>
                                 </tr>
                             ))
@@ -242,7 +248,7 @@ function Viewer() {
             </table>
         </div>
             <button 
-                className='p-2 w-full m-t-[0.5rem] rounded-lg border-2 border-solid'
+                className={`p-2 w-full m-t-[0.5rem] rounded-lg border-2 border-solid ${disabled ? disabledClassList : ''}`}
                 onClick={() => {
                     const obj = {}
                     for (const header of headers) {
