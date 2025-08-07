@@ -103,7 +103,7 @@ BEGIN
             ON DELETE CASCADE);
 
     -- Insert Contacts
-    BEGIN TRANSACTION;
+    START TRANSACTION;
     INSERT INTO Contacts (firstName, lastName, phoneNumber, streetAddress, city, zipCode) VALUES
     ('Ash','Ketchum','1112223333','Route 1','Pallet',10000),
     ('Brock','Harrison','1800555593','Route 2','Pewter',10001),
@@ -236,7 +236,7 @@ CREATE PROCEDURE sp_insertApplication(
     IN newPetID INT
 )
 BEGIN
-    BEGIN TRANSACTION;
+    START TRANSACTION;
     INSERT INTO Applications (approvalState, applicationDate, note, contactID, petID)
     VALUES (newApprovalState, newApplicationDate, newNote, newContactID, newPetID);
     COMMIT;
@@ -259,7 +259,7 @@ CREATE PROCEDURE sp_updateApplicationByID(
     IN newPetID INT
 )
 BEGIN
-    BEGIN TRANSACTION;
+    START TRANSACTION;
     UPDATE Applications
     SET approvalState = newApprovalState,
         applicationDate = newApplicationDate,
@@ -280,7 +280,7 @@ DROP PROCEDURE IF EXISTS sp_deleteApplicationByID;
 DELIMITER //
 CREATE PROCEDURE sp_deleteApplicationByID(IN appID INT)
 BEGIN
-    BEGIN TRANSACTION;
+    START TRANSACTION;
     IF EXISTS (SELECT 1 FROM Applications WHERE applicationID = appID) THEN
         DELETE FROM Applications WHERE applicationID = appID;
     END IF;

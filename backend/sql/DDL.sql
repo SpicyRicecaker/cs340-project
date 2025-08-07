@@ -100,7 +100,7 @@ CREATE TABLE `AppAnswers` (
 -- Inserting Sample Data
 -- -----------------------------------------------------
 
-BEGIN TRANSACTION;
+START TRANSACTION;
 -- Insert all Contacts
 INSERT INTO Contacts
 (firstName, lastName, phoneNumber, streetAddress, city, zipCode) 
