@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';  // Importing useState for
 import { useParams } from 'react-router-dom'
 import { backendURL } from './constants';
 import Link from './Link'
+import Dropdown from './Dropdown'
 
 function Viewer() {
     console.log('rerender')
@@ -12,6 +13,15 @@ function Viewer() {
     const [headers, setHeaders] = useState([])
     const [rows, setRows] = useState([])
     const [iEdit, setIEdit] = useState(-1)
+
+    
+    let phantomRowIEdit = useMemo(() => {
+        if (iEdit !== -1) {
+            return JSON.parse(JSON.stringify(rows[iEdit]))
+        } else {
+            return {}
+        }
+    })
 
     const disabled = table !== 'Applications'
     console.log(disabled)
@@ -193,25 +203,38 @@ function Viewer() {
                                                         ${textCenterProps(i_r, i_k, row, k)}`}
                                                     key={i_k}>
                                                             {row[k] ? row[k] : <i><b>null</b></i>}
-                                                            {iEdit == i_r ? 
-                                                                <textarea 
-                                                                    className={`
-                                                                        text-sm 
-                                                                        place-self-center
-                                                                        w-full
-                                                                        h-full
-                                                                        m-0
-                                                                        p-inherit
-                                                                        border-none
-                                                                        font-mono
-                                                                        box-border
-                                                                        resize-none
-                                                                        absolute
-                                                                        ${textCenterProps(i_r, i_k, row, k)}
-                                                                        `}
-                                                                    defaultValue={row[k]}
-                                                                    placeholder={`${headers[i_k]} here ...`}
-                                                                ></textarea> : <></>}
+                                                            {
+                                                                (() => {
+                                                                    if (iEdit === i_r) {
+                                                                        // if we're the note field
+                                                                        if (headers[i_k] === 'note') {
+                                                                            return <textarea 
+                                                                                    className={`
+                                                                                        text-sm 
+                                                                                        place-self-center
+                                                                                        w-full
+                                                                                        h-full
+                                                                                        m-0
+                                                                                        p-inherit
+                                                                                        border-none
+                                                                                        font-mono
+                                                                                        box-border
+                                                                                        resize-none
+                                                                                        absolute
+                                                                                        ${textCenterProps(i_r, i_k, row, k)}
+                                                                                        `}
+                                                                                    defaultValue={row[k]}
+                                                                                    placeholder={`${headers[i_k]} here ...`}
+                                                                            ></textarea> 
+                                                                        } else if (headers[i_k] === 'contactID') {
+                                                                           return <Dropdown table={'Contacts'} id={row[k]} phantomRowIEdit={phantomRowIEdit} phantomRowIEditHeader="contactID"></Dropdown>
+                                                                        } else if (headers[i_k] === 'petID') {
+                                                                           return <Dropdown table={'Pets'} id={row[k]} phantomRowIEdit={phantomRowIEdit} phantomRowIEditHeader="petID"></Dropdown>
+                                                                        }
+                                                                    }   
+                                                                })()
+                                                                
+                                                            }
                                                     </td>
                                             )
                                         }

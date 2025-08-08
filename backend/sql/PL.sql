@@ -289,3 +289,20 @@ BEGIN
 END//
 DELIMITER ;
 
+-- get joined information about contacts
+DROP PROCEDURE IF EXISTS sp_getJoinedContactsID;
+DELIMITER //
+CREATE PROCEDURE sp_getJoinedContactsID()
+BEGIN
+    SELECT contactID, firstName, lastName FROM Contacts;
+END//
+DELIMITER ;
+
+-- get joined information about pets
+DROP PROCEDURE IF EXISTS sp_getJoinedPetsID;
+DELIMITER //
+CREATE PROCEDURE sp_getJoinedPetsID()
+BEGIN
+    SELECT petID, name FROM Pets;
+END//
+DELIMITER ;

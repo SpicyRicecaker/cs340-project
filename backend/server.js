@@ -102,6 +102,30 @@ app.get('/:table/contents', async ({ params, set }) => {
   }
 });
 
+app.get('/Contacts/friendly', async ({ params, set }) => {
+  try {
+    const query = `call sp_getJoinedContactsID();`;
+    const [rows] = await db.query(query);
+    return rows;
+  } catch (error) {
+    console.error('Error executing query:', error);
+    set.status = 500;
+    return { error: 'An error occurred on the server.' };
+  }
+})
+
+app.get('/Pets/friendly', async ({ params, set }) => {
+  try {
+    const query = `call sp_getJoinedPetsID();`;
+    const [rows] = await db.query(query);
+    return rows;
+  } catch (error) {
+    console.error('Error executing query:', error);
+    set.status = 500;
+    return { error: 'An error occurred on the server.' };
+  }
+})
+
 app.listen(PORT, () => {
   console.log(`Elysia server started on http://localhost:${PORT}; press Ctrl-C to terminate.`);
 });
