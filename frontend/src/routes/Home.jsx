@@ -1,17 +1,16 @@
-import Link from './Link'
-import { backendURL } from './constants'
+import Link from '../components/Link'
+import { backendURL } from '../constants'
 
 function Home() {
 
     const reset = async () => {
-        // console.log(`fetching ${backendURL}reset`)
         const res = await fetch(`${backendURL}/reset`, {
             method: 'PUT'
         })
         if (res.ok) {
-            console.log('yayy!!!')
+            console.log('successfully reset database')
         } else {
-            console.log("error, couldn't reset")
+            console.log("error resetting database")
         }
     }
 

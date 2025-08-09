@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
-import { backendURL } from "./constants"
+import { backendURL } from "../constants"
 
-function NativeSelectDropdown({ textCenterProps, phantomRowIEdit, phantomRowIEditHeader}) {
+function EditBox({ textCenterProps, phantomRowIEdit, phantomRowIEditHeader}) {
   // State to hold the currently selected value
   const [text, setText] = useState(phantomRowIEdit[phantomRowIEditHeader]) // Default to the placeholder
 
@@ -14,20 +14,7 @@ function NativeSelectDropdown({ textCenterProps, phantomRowIEdit, phantomRowIEdi
 
   return (
     <textarea 
-            className={`
-                text-sm 
-                place-self-center
-                w-full
-                h-full
-                m-0
-                p-inherit
-                border-none
-                font-mono
-                box-border
-                resize-none
-                absolute
-                ${textCenterProps}
-                `}
+            className={` text-sm place-self-center w-full h-full m-0 p-inherit border-none font-mono box-border resize-none absolute ${textCenterProps} `}
             onChange={handleChange}
             defaultValue={text}
             placeholder={`${phantomRowIEditHeader} here ...`}
@@ -35,4 +22,4 @@ function NativeSelectDropdown({ textCenterProps, phantomRowIEdit, phantomRowIEdi
   )
 }
 
-export default NativeSelectDropdown
+export default EditBox

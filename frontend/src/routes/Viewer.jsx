@@ -1,25 +1,25 @@
 import { useState, useEffect, useMemo } from 'react';  // Importing useState for managing state in the component
 import { useParams } from 'react-router-dom'
-import { backendURL } from './constants';
-import Link from './Link'
-import Dropdown from './Dropdown'
-import Dropdown2 from './Dropdown2'
-import DatePicker from './DatePicker'
-import EditBox from './EditBox'
+import { backendURL } from '../constants';
+import Link from '../components/Link'
+import Dropdown from '../components/Dropdown'
+import DropdownStatic from '../components/DropdownStatic'
+import DatePicker from '../components/DatePicker'
+import EditBox from '../components/EditBox'
 
 
 function Viewer() {
-    console.log('rerender')
+    console.log('[INFO] rerender')
     const { table } = useParams();
 
-    // Set up a state variable `message` to store and display the backend response
     const [isLoading, setIsLoading] = useState(true);
     const [headers, setHeaders] = useState([])
     const [rows, setRows] = useState([])
     const [iEdit, setIEdit] = useState(-1)
     const [isInsert, setIsInsert] = useState(false)
-
     
+    // whenever a new row is selected, create a dummy object to absorb changes
+    // these changes will them be committed to the DB
     let phantomRowIEdit = useMemo(() => {
         if (iEdit !== -1) {
             return JSON.parse(JSON.stringify(rows[iEdit]))
@@ -28,6 +28,7 @@ function Viewer() {
         }
     })
 
+    // commit a pending change from the frontend to the db
     const commitPhantomRow = async () => {
         if (isInsert) {
             console.log('current phantomRowIEdit', phantomRowIEdit)
@@ -69,9 +70,7 @@ function Viewer() {
     }
 
     const disabled = table !== 'Applications'
-    console.log(disabled)
     const disabledClassList = "opacity-50 hover:cursor-not-allowed pointer-events-none"
-    // ${disabled ? disabledClassList : ''}
 
     const [rowMetaData, columnNumber] = useMemo(() => {
         if (!isLoading) {
@@ -129,6 +128,7 @@ function Viewer() {
         }
     }
 
+    // CSS properties to calculate centering based off different line lengths
     const textCenterProps = (i_r, i_k, row, k) => {
         const isSmall = rowMetaData[i_r][i_k] < 20
 
@@ -162,6 +162,7 @@ function Viewer() {
         return props.join(" ")
     }
 
+    // delete an entry from the datbase
     const delId = async (i_r, id) => {
         if (isInsert) {
             // console.log('woooooooo')
@@ -171,31 +172,21 @@ function Viewer() {
             return
         }
         console.log(`sending request ${backendURL}/delete/${table}/${id}`)
-        // console.log(`fetching ${backendURL}reset`)
         const res = await fetch(`${backendURL}/delete/${table}/${id}`, {
             method: 'PUT'
         })
         if (!res.ok) {
-            console.log("error, couldn't reset")
+            console.log("error, couldn't delete row")
             return
         }
         setIEdit(-1)
         setRows(rows.filter((_, i) => i !== i_r))
     }
 
-    // Load table on page load
+    // Load data from database on page load
     useEffect(() => {
         getData();
     }, [])
-
-    // if (isLoading) {
-    //     return <div>Loading data, please wait...</div>;
-    // }
-
-    // If not loading, and there's no data, show a message
-    // if (rows.length === 0) {
-    //     return <div className='text-white font-mono text-lg'>No data found.</div>
-    // }
 
     return(
     <>
@@ -216,18 +207,10 @@ function Viewer() {
                                 ))
                             }
                             {(() => {
-                                // if (iEdit === -1) {
-                                    return <>
-                                        <th className='th1 p-4'>&nbsp;</th>
-                                        <th className='th1 p-4'>&nbsp;</th>
-                                    </>
-                                // } else {
-                                //     return <>
-                                //         <th className='th1 p-4'>&nbsp;</th>
-                                //         <th className='th1 p-4'>&nbsp;</th>
-                                //         <th className='th1 p-4'>&nbsp;</th>
-                                //     </>
-                                // }
+                                return <>
+                                    <th className='th1 p-4'>&nbsp;</th>
+                                    <th className='th1 p-4'>&nbsp;</th>
+                                </>
                             })()}
                         </tr>
                     </thead>
@@ -240,19 +223,7 @@ function Viewer() {
                                             return (
                                                 <td 
                                                     lang="en" 
-                                                    className={`td1
-                                                        border-t-solid
-                                                        border-b-solid
-                                                        p-t-4
-                                                        p-b-4
-                                                        p-l-2
-                                                        p
-                                                        p-r-2
-                                                        grid
-                                                        text-sm
-                                                        relative
-                                                        ${iEdit === i_r ? "bg-gray" : ''}
-                                                        ${textCenterProps(i_r, i_k, row, k)}`}
+                                                    className={`td1 border-t-solid border-b-solid p-t-4 p-b-4 p-l-2 p p-r-2 grid text-sm relative ${iEdit === i_r ? "bg-gray" : ''} ${textCenterProps(i_r, i_k, row, k)}`}
                                                     key={i_k}>
                                                             {row[k] ? <span className={`${iEdit === i_r ? 'invisible': ''}`}>{row[k]}</span> : <i><b>null</b></i>}
                                                             {
@@ -268,7 +239,7 @@ function Viewer() {
                                                                         } else if (headers[i_k] === 'petID') {
                                                                            return <Dropdown table={'Pets'} id={row[k]} phantomRowIEdit={phantomRowIEdit} phantomRowIEditHeader="petID"></Dropdown>
                                                                         } else if (headers[i_k] === 'approvalState') {
-                                                                           return <Dropdown2 id={row[k]} phantomRowIEdit={phantomRowIEdit} phantomRowIEditHeader="approvalState"></Dropdown2>
+                                                                           return <DropdownStatic id={row[k]} phantomRowIEdit={phantomRowIEdit} phantomRowIEditHeader="approvalState"></DropdownStatic>
                                                                         } else if (headers[i_k] === 'applicationDate') {
                                                                             return <DatePicker phantomRowIEdit={phantomRowIEdit} phantomRowIEditHeader="applicationDate"></DatePicker>
                                                                         }
@@ -281,33 +252,22 @@ function Viewer() {
                                         }
                                     )
                                     }
-                                    <td className='td1
-                                                        border-t-solid
-                                                        border-b-solid
-                                                        grid
-                                                        grid-rows-3
-                                                        gap-1
-                                                        p-2'>
+                                    <td className='td1 border-t-solid border-b-solid grid grid-rows-3 gap-1 p-2'>
                                             <button className={`${iEdit === i_r ? 'opacity-50 pointer-events-none' : ''} ${disabled ? disabledClassList : ''}`} onClick={() => {
                                                 setIEdit(i_r)
                                             }}>edit</button>
                                             <button className={`${iEdit === i_r ? '' : 'opacity-50 pointer-events-none'}`} onClick={() => {
-                                                // if (window.confirm('are you sure you want to cancel')) {
                                                 if (isInsert) {
                                                     setRows(rows.filter((l, i) => i !== rows.length - 1))
                                                     setIsInsert(false)
                                                 }
                                                     setIEdit(-1)
-                                                // }
                                             }}>cancel</button>
                                             <button className={`${iEdit === i_r ? '' : 'opacity-50 pointer-events-none'}`} onClick={async () => {
                                                 await commitPhantomRow();
                                             }}>apply</button>
                                     </td>
-                                    <td className='td1
-                                                    border-t-solid
-                                                    border-b-solid
-                                                    p-2'>
+                                    <td className='td1 border-t-solid border-b-solid p-2'>
                                         <button className={`flex-1 ${disabled ? disabledClassList : ''}`} onClick={(e) => delId(i_r, row[headers[0]])}>delete</button>
                                     </td>
                                 </tr>

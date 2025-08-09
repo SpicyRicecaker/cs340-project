@@ -99,6 +99,12 @@ tr {
 
 $height: 2000;
 
+
+// The following SCSS star code was modified from Ibrahim Abdulhameed's
+// medium blog post at https://ibdul.medium.com/shining-bright-the-starry-css-background-that-lit-up-my-ui-d19acb862dff
+// I modified the code to have a fade in and fade out opacity to remove the jarring transition between the end of the 
+// translation keyframes :)
+
 // Function to generate multiple box-shadow values for stars
 @function multiple-box-shadow($number_of_stars) {
   $value: "#{math.random($height)}px #{math.random($height)}px #FFF"; // Initial shadow

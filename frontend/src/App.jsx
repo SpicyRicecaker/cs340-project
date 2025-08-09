@@ -1,8 +1,7 @@
 import './App.scss';
 import { Routes, Route } from 'react-router-dom'
-import Home from './Home'
-import Viewer from './Viewer'
-import Test from './Test'
+import Home from './routes/Home'
+import Viewer from './routes/Viewer'
 
 function App() {
   return (
@@ -16,7 +15,6 @@ function App() {
         <Routes>
             <Route path="/" element={<Home />}></Route>
             <Route path="/view/:table" element={<Viewer />}></Route>
-            {/* <Route path="/test" element={<Test/>}></Route> */}
         </Routes>
 
       </div>
