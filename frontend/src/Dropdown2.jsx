@@ -1,32 +1,17 @@
 import React, { useEffect, useState } from "react"
 import { backendURL } from "./constants"
 
-function NativeSelectDropdown({ id, table, phantomRowIEdit, phantomRowIEditHeader}) {
+function NativeSelectDropdown({ id, phantomRowIEdit, phantomRowIEditHeader}) {
   // State to hold the currently selected value
-  const [selectedValue, setSelectedValue] = useState('') // Default to the placeholder
-  const [options, setOptions] = useState([])
-
-  const getData = async () => {
-    const res = await fetch(`${backendURL}/${table}/friendly`)
-    if (res.ok) {
-      const rows = (await res.json())[0]
-      // find the row corresponding to our current value
-      const i = rows.findIndex((r, i) => Object.values(r)[0] == id)
-      const newRows = rows.map((r, i) => Object.values(r).join(" "))
-      setSelectedValue(newRows[i])
-      setOptions(newRows)
-    }
-  }
-
-  useEffect(() => {
-    getData()
-  }, [])
+  const [selectedValue, setSelectedValue] = useState(id) // Default to the placeholder
+  const [options, setOptions] = useState(['under-review', 'approved', 'rejected'])
 
   // This function is called whenever the user changes the selection
   const handleChange = (event) => {
     setSelectedValue(event.target.value)
 
-    phantomRowIEdit[phantomRowIEditHeader] = parseInt(event.target.value.split(" ")[0])
+    phantomRowIEdit[phantomRowIEditHeader] = event.target.value
+    console.log('set dropdown value to ', phantomRowIEdit[phantomRowIEditHeader])
     
     console.log("Selected:", event.target.value)
   }

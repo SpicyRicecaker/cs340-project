@@ -3,6 +3,10 @@ import { useParams } from 'react-router-dom'
 import { backendURL } from './constants';
 import Link from './Link'
 import Dropdown from './Dropdown'
+import Dropdown2 from './Dropdown2'
+import DatePicker from './DatePicker'
+import EditBox from './EditBox'
+
 
 function Viewer() {
     console.log('rerender')
@@ -22,6 +26,20 @@ function Viewer() {
             return {}
         }
     })
+
+    const commitPhantomRow = async () => {
+        const res = await fetch(`${backendURL}/edit/${table}`, { 
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(phantomRowIEdit)
+        })
+        if (res.ok) {
+            await getData()
+        }
+        setIEdit(-1)
+    }
 
     const disabled = table !== 'Applications'
     console.log(disabled)
@@ -57,7 +75,6 @@ function Viewer() {
     // Get the data from the database
     const getData = async function () {
         setIsLoading(true);
-        if (rows.length > 0) return; // Skip if data is already fetched
         try {
             let responses = (await Promise.allSettled([fetch(`${backendURL}/${table}/description`), fetch(`${backendURL}/${table}/contents`)])).map((p) => p.value)
             responses = (await Promise.allSettled(responses.map((r) => {
@@ -202,34 +219,23 @@ function Viewer() {
                                                         ${iEdit === i_r ? "bg-gray" : ''}
                                                         ${textCenterProps(i_r, i_k, row, k)}`}
                                                     key={i_k}>
-                                                            {row[k] ? row[k] : <i><b>null</b></i>}
+                                                            {row[k] ? <span className={`${iEdit === i_r ? 'invisible': ''}`}>{row[k]}</span> : <i><b>null</b></i>}
                                                             {
                                                                 (() => {
                                                                     if (iEdit === i_r) {
                                                                         // if we're the note field
                                                                         if (headers[i_k] === 'note') {
-                                                                            return <textarea 
-                                                                                    className={`
-                                                                                        text-sm 
-                                                                                        place-self-center
-                                                                                        w-full
-                                                                                        h-full
-                                                                                        m-0
-                                                                                        p-inherit
-                                                                                        border-none
-                                                                                        font-mono
-                                                                                        box-border
-                                                                                        resize-none
-                                                                                        absolute
-                                                                                        ${textCenterProps(i_r, i_k, row, k)}
-                                                                                        `}
-                                                                                    defaultValue={row[k]}
-                                                                                    placeholder={`${headers[i_k]} here ...`}
-                                                                            ></textarea> 
+                                                                            return <EditBox textCenterProps={textCenterProps(i_r, i_k, row, k)} phantomRowIEdit={phantomRowIEdit} phantomRowIEditHeader={headers[i_k]}/> 
+                                                                        } else if (headers[i_k] === 'applicationID') {
+                                                                            return <span>{row[k]}</span>
                                                                         } else if (headers[i_k] === 'contactID') {
                                                                            return <Dropdown table={'Contacts'} id={row[k]} phantomRowIEdit={phantomRowIEdit} phantomRowIEditHeader="contactID"></Dropdown>
                                                                         } else if (headers[i_k] === 'petID') {
                                                                            return <Dropdown table={'Pets'} id={row[k]} phantomRowIEdit={phantomRowIEdit} phantomRowIEditHeader="petID"></Dropdown>
+                                                                        } else if (headers[i_k] === 'approvalState') {
+                                                                           return <Dropdown2 id={row[k]} phantomRowIEdit={phantomRowIEdit} phantomRowIEditHeader="approvalState"></Dropdown2>
+                                                                        } else if (headers[i_k] === 'applicationDate') {
+                                                                            return <DatePicker phantomRowIEdit={phantomRowIEdit} phantomRowIEditHeader="applicationDate"></DatePicker>
                                                                         }
                                                                     }   
                                                                 })()
@@ -255,8 +261,8 @@ function Viewer() {
                                                     setIEdit(-1)
                                                 // }
                                             }}>cancel</button>
-                                            <button  className={`${iEdit === i_r ? '' : 'opacity-50 pointer-events-none'}`} onClick={() => {
-                                                setIEdit(-1)
+                                            <button  className={`${iEdit === i_r ? '' : 'opacity-50 pointer-events-none'}`} onClick={async () => {
+                                                await commitPhantomRow();
                                             }}>apply</button>
                                     </td>
                                     <td className='td1
