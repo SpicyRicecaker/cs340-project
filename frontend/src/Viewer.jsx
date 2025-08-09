@@ -29,22 +29,42 @@ function Viewer() {
     })
 
     const commitPhantomRow = async () => {
-        const res = await fetch(`${backendURL}/edit/${table}`, { 
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(phantomRowIEdit)
-        })
-        if (res.ok) {
-            await getData()
-        } else {
-            // check if we're in the middle of insert
-            if (isInsert) {
+        if (isInsert) {
+            console.log('current phantomRowIEdit', phantomRowIEdit)
+            const res = await fetch(`${backendURL}/add/${table}`, { 
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(phantomRowIEdit)
+            })
+            if (res.ok) {
+                await getData()
+            } else {
+                // check if we're in the middle of insert
                 setRows(rows.filter((l, i) => i !== rows.length - 1))
                 setIsInsert(false)
             }
+            setIsInsert(false)
+        } else {
+            const res = await fetch(`${backendURL}/edit/${table}`, { 
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(phantomRowIEdit)
+            })
+            if (res.ok) {
+                await getData()
+            } else {
+                // check if we're in the middle of insert
+                if (isInsert) {
+                    setRows(rows.filter((l, i) => i !== rows.length - 1))
+                    setIsInsert(false)
+                }
+            }
         }
+        
         setIEdit(-1)
     }
 
@@ -144,7 +164,7 @@ function Viewer() {
 
     const delId = async (i_r, id) => {
         if (isInsert) {
-            console.log('woooooooo')
+            // console.log('woooooooo')
             setRows(rows.filter((l, i) => i !== rows.length - 1))
             setIsInsert(false)
             setIEdit(-1)
@@ -242,7 +262,7 @@ function Viewer() {
                                                                         if (headers[i_k] === 'note') {
                                                                             return <EditBox textCenterProps={textCenterProps(i_r, i_k, row, k)} phantomRowIEdit={phantomRowIEdit} phantomRowIEditHeader={headers[i_k]}/> 
                                                                         } else if (headers[i_k] === 'applicationID') {
-                                                                            return <span>{row[k]}</span>
+                                                                            return <span>{!isInsert ? row[k] : '(will be auto-set)'}</span>
                                                                         } else if (headers[i_k] === 'contactID') {
                                                                            return <Dropdown table={'Contacts'} id={row[k]} phantomRowIEdit={phantomRowIEdit} phantomRowIEditHeader="contactID"></Dropdown>
                                                                         } else if (headers[i_k] === 'petID') {

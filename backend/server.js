@@ -91,6 +91,57 @@ app.post('/edit/:table', async ({params, body}) => {
   } 
 })
 
+app.post('/add/:table', async ({body, params, set}) => {
+  // console.log('request received')
+  const { table } = params;
+    // --- Security Check ---
+    console.log('table received')
+  if (!ALLOWED_TABLES.has(table)) {
+    // Elysia's 'set' object handles the status and headers for you
+    set.status = 400;
+    return { error: 'Invalid table specified.' };
+  }
+      console.log('parsing data')
+      console.log('received', body)
+
+  // console.log('table valid')
+  // assume body is fully valid xD
+  const { approvalState, applicationDate, note, contactID, petID } = body || {};
+      console.log('parsed data')
+
+  if (!approvalState || !applicationDate || !contactID || !petID) {
+    set.status = 400
+    return { error: "Bad request"}
+  }
+
+        console.log('verify data')
+
+
+  const formattedApplicationDate = toMySQLDateTime(applicationDate)
+
+  if (!formattedApplicationDate) {
+    set.status = 400;
+    return { error: 'Invalid date format.' };
+  }
+
+  try {
+    // pray for no SQL injection attacks...
+    const query = `call sp_insert${ table.substring(0, table.length - 1) }(?, ?, ?, ?, ?);`
+    console.log('executing ', query)
+    // console.log('calling...')
+    console.log('???', approvalState, formattedApplicationDate, note ?? null, contactID, petID)
+    const values = [approvalState, formattedApplicationDate, note ?? null, contactID, petID]
+    await db.execute(query, values)
+    // await db.execute()
+    // console.log('done calling.')
+    return { response: 'Successfully updated table.'}
+  } catch (error) {
+    console.error('Error executing query:', error);
+    set.status = 500;
+    return { error: 'An error occurred on the server.' };
+  }
+})
+
 app.put('/delete/:table/:id', async ({params, set}) => {
   const { table, id } = params;
 
@@ -105,7 +156,6 @@ app.put('/delete/:table/:id', async ({params, set}) => {
     set.status = 500;
     return { error: 'An error occurred on the server.' };
   }
-
 })
 
 app.put('/reset', async () => {
