@@ -17,6 +17,7 @@ function Viewer() {
     const [headers, setHeaders] = useState([])
     const [rows, setRows] = useState([])
     const [iEdit, setIEdit] = useState(-1)
+    const [isInsert, setIsInsert] = useState(false)
 
     
     let phantomRowIEdit = useMemo(() => {
@@ -37,6 +38,12 @@ function Viewer() {
         })
         if (res.ok) {
             await getData()
+        } else {
+            // check if we're in the middle of insert
+            if (isInsert) {
+                setRows(rows.filter((l, i) => i !== rows.length - 1))
+                setIsInsert(false)
+            }
         }
         setIEdit(-1)
     }
@@ -136,6 +143,13 @@ function Viewer() {
     }
 
     const delId = async (i_r, id) => {
+        if (isInsert) {
+            console.log('woooooooo')
+            setRows(rows.filter((l, i) => i !== rows.length - 1))
+            setIsInsert(false)
+            setIEdit(-1)
+            return
+        }
         console.log(`sending request ${backendURL}/delete/${table}/${id}`)
         // console.log(`fetching ${backendURL}reset`)
         const res = await fetch(`${backendURL}/delete/${table}/${id}`, {
@@ -145,6 +159,7 @@ function Viewer() {
             console.log("error, couldn't reset")
             return
         }
+        setIEdit(-1)
         setRows(rows.filter((_, i) => i !== i_r))
     }
 
@@ -258,10 +273,14 @@ function Viewer() {
                                             }}>edit</button>
                                             <button className={`${iEdit === i_r ? '' : 'opacity-50 pointer-events-none'}`} onClick={() => {
                                                 // if (window.confirm('are you sure you want to cancel')) {
+                                                if (isInsert) {
+                                                    setRows(rows.filter((l, i) => i !== rows.length - 1))
+                                                    setIsInsert(false)
+                                                }
                                                     setIEdit(-1)
                                                 // }
                                             }}>cancel</button>
-                                            <button  className={`${iEdit === i_r ? '' : 'opacity-50 pointer-events-none'}`} onClick={async () => {
+                                            <button className={`${iEdit === i_r ? '' : 'opacity-50 pointer-events-none'}`} onClick={async () => {
                                                 await commitPhantomRow();
                                             }}>apply</button>
                                     </td>
@@ -283,8 +302,16 @@ function Viewer() {
                     const obj = {}
                     for (const header of headers) {
                         obj[header] = ""
+                        if (header === 'applicationDate') {
+                            obj[header] = ((dateObj) => {
+                                // .toISOString() returns 'YYYY-MM-DDTHH:mm:ss.sssZ'
+                                // We just need the first 10 characters.
+                                return dateObj.toISOString().slice(0, 10);
+                            })(new Date())
+                        }
                     }
                     setRows([...rows, obj])
+                    setIsInsert(true)
                     setIEdit(rows.length)
             }}>insert</button>
     </>
