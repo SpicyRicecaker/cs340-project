@@ -2,16 +2,6 @@
 import mysql from 'mysql2'
 import { config } from 'dotenv'
 
-// Create a 'connection pool' using the provided credentials
-// const pool = mysql.createPool({
-//     waitForConnections: true,
-//     connectionLimit   : 10,
-//     host              : '***REDACTED***',
-//     user              : '***REDACTED***',
-//     password          : '***REDACTED***',
-//     database          : '***REDACTED***'
-// }).promise(); // This makes it so we can use async / await rather than callbacks
-
 config()
 
 const pool = mysql.createPool({
