@@ -1,3 +1,6 @@
+// Database backend code (server.js) was created with the help 
+// of documentation from the framework, https://elysiajs.com/at-glance.html.
+
 // server.js
 
 // Import Elysia and the CORS plugin
